@@ -3,45 +3,30 @@ import classes from "./AvailableMeals.module.css";
 import MealItem from "./MealItem";
 import Card from "../UI/Card";
 
-const DUMMY_MEALS = [
-    {
-      id: 'm1',
-      name: 'Sushi',
-      description: 'Finest fish and veggies',
-      price: 22.99,
-    },
-    {
-      id: 'm2',
-      name: 'Schnitzel',
-      description: 'A german specialty!',
-      price: 16.5,
-    },
-    {
-      id: 'm3',
-      name: 'Barbecue Burger',
-      description: 'American, raw, meaty',
-      price: 12.99,
-    },
-    {
-      id: 'm4',
-      name: 'Green Bowl',
-      description: 'Healthy...and green...',
-      price: 18.99,
-    },
-  ];
+let responseMeals;
+
+const DUMMY_MEALS = await fetch('https://react-http-f885f-default-rtdb.firebaseio.com/meals.json');
+
+if(DUMMY_MEALS.ok) {
+  responseMeals = await DUMMY_MEALS.json();
+} 
 
 const AvailableMeals = () => {
+
+  const responseMealsArray = Object.keys(responseMeals).map(key => {
+    return { meals: responseMeals[key] };
+  });
 
     return (
         <section className={classes.meals}>
             <Card>
                 <ul>
-                {DUMMY_MEALS.map(meal => 
+                {responseMealsArray.map(meal => 
                   <MealItem 
-                    id={meal.id} 
-                    name={meal.name}
-                    description={meal.description}
-                    price={meal.price}
+                    id={meal.meals.id} 
+                    name={meal.meals.name}
+                    description={meal.meals.description}
+                    price={meal.meals.price}
                   />)}
                     
                 </ul>

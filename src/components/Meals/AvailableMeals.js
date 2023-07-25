@@ -13,26 +13,28 @@ if(DUMMY_MEALS.ok) {
 
 const AvailableMeals = () => {
 
-  const responseMealsArray = Object.keys(responseMeals).map(key => {
-    return { meals: responseMeals[key] };
-  });
+  let meals = [];  
 
-    return (
-        <section className={classes.meals}>
-            <Card>
-                <ul>
-                {responseMealsArray.map(meal => 
-                  <MealItem 
-                    id={meal.meals.id} 
-                    name={meal.meals.name}
-                    description={meal.meals.description}
-                    price={meal.meals.price}
-                  />)}
-                    
-                </ul>
-            </Card>
-        </section>
-    );
+  for (const key in responseMeals) {
+    meals.push(responseMeals[key]);
+  }
+
+  return (
+      <section className={classes.meals}>
+          <Card>
+              <ul>
+              {meals.map(meal => 
+                <MealItem 
+                  id={meal.id} 
+                  name={meal.name}
+                  description={meal.description}
+                  price={meal.price}
+                />)}
+                  
+              </ul>
+          </Card>
+      </section>
+  );
 };
 
 export default AvailableMeals;

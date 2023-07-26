@@ -44,6 +44,7 @@ const Cart = props => {
         });
         setIsSubmitting(false);
         setHasSubmitted(true);
+        cartCtx.clearCart();
     };
 
     const checkoutButtons = (
@@ -75,7 +76,6 @@ const Cart = props => {
     const isSubmittingContent = <p>Is Submitting ...</p>
 
     const hasSubmitedContent = <p>Has Subitted !!!! ...</p>
-
 
     return (
         <Modal onCloseCart={props.onCloseCart}>

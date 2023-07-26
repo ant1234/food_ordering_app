@@ -6,6 +6,8 @@ import Card from "../UI/Card";
 const AvailableMeals = () => {
 
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [httpError, setHttpError] = useState();
 
   useEffect(() => {
 
@@ -13,9 +15,14 @@ const AvailableMeals = () => {
       
       let mealsArr = []; 
       let responseMeals;
+      setIsLoading(true);
 
       const response = await fetch('https://react-http-f885f-default-rtdb.firebaseio.com/meals.json');
-      responseMeals = await response.json();
+
+      if(!response.ok) {
+         throw new Error('Something went wrong ..');
+      }
+        responseMeals = await response.json();
        
         for (const key in responseMeals) {
           mealsArr.push({
@@ -27,13 +34,32 @@ const AvailableMeals = () => {
         }
 
         setMeals(mealsArr);
+        setIsLoading(false);
+
     }
 
-    fetchMeals();
+    fetchMeals().catch(error => {
+      setIsLoading(false);
+      setHttpError(error.message);
+    });
 
   }, []);
 
-  console.log(meals);
+  if(isLoading) {
+    return (
+      <section className={classes.loading}>
+        <p>Loading ...</p>
+      </section>
+    ); 
+  }
+
+  if(httpError) {
+    return (
+      <section className={classes.error}>
+        <p>{httpError}</p>
+      </section>
+    ); 
+  }
 
   return (
       <section className={classes.meals}>

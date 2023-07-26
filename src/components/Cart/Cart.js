@@ -9,6 +9,9 @@ const Cart = props => {
 
     const [isCheckout, setIsCheckout] = useState(false);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
     const cartCtx = useContext(CartContext);
 
     const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
@@ -27,8 +30,9 @@ const Cart = props => {
         setIsCheckout(true);
     };
 
-    const onSubmitData = userData => {
-        fetch('https://react-http-f885f-default-rtdb.firebaseio.com/orders.json', {
+    const onSubmitData = async userData => {
+        setIsSubmitting(true);
+        await fetch('https://react-http-f885f-default-rtdb.firebaseio.com/orders.json', {
             method: 'POST',
             body: JSON.stringify({
                 user: userData.name,
@@ -38,6 +42,8 @@ const Cart = props => {
                 orderedItems: cartCtx.items,
             }),
         });
+        setIsSubmitting(false);
+        setHasSubmitted(true);
     };
 
     const checkoutButtons = (
@@ -47,24 +53,37 @@ const Cart = props => {
             </div>
     );
 
+    const modalContent = (
+    <div>
+        <ul className={classes['cart-items']}>
+            {cartCtx.items.map(item => 
+                <CartItem 
+                    key={item.id}
+                    name={item.name}
+                    amount={item.amount}
+                    price={item.price}
+                    onRemove={onRemoveHandler.bind(null, item.id)}
+                    onAdd={onAddHandler.bind(null,item)}
+                />
+            )}
+        </ul> 
+        <div className={classes.total}><span>Total Amount</span></div>
+        <div><span>{totalAmount}</span></div>
+    </div>
+    );
+
+    const isSubmittingContent = <p>Is Submitting ...</p>
+
+    const hasSubmitedContent = <p>Has Subitted !!!! ...</p>
+
+
     return (
         <Modal onCloseCart={props.onCloseCart}>
-            <div>
-                <ul className={classes['cart-items']}>
-                    {cartCtx.items.map(item => 
-                        <CartItem 
-                            key={item.id}
-                            name={item.name}
-                            amount={item.amount}
-                            price={item.price}
-                            onRemove={onRemoveHandler.bind(null, item.id)}
-                            onAdd={onAddHandler.bind(null,item)}
-                        />
-                    )}
-                </ul> 
-                <div className={classes.total}><span>Total Amount</span></div>
-                <div><span>{totalAmount}</span></div>
-            </div>
+
+            {!isSubmitting && !hasSubmitted && modalContent}
+            {isSubmitting && !hasSubmitted && isSubmittingContent}
+            {!isSubmitting && hasSubmitted && hasSubmitedContent}
+
             {isCheckout && <Checkout onSubmitData={onSubmitData} onCloseCart={props.onCloseCart}/>} 
             {!isCheckout && checkoutButtons}
         </Modal>

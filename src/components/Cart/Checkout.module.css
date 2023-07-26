@@ -1,11 +1,11 @@
 .form {
     margin: 1rem 0;
-    height: 19rem;
-    overflow: auto;
+    height: 10rem;
+    overflow: scroll;
   }
   
   .control {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
   }
   
   .control label {

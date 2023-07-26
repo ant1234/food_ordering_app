@@ -27,6 +27,19 @@ const Cart = props => {
         setIsCheckout(true);
     };
 
+    const onSubmitData = userData => {
+        fetch('https://react-http-f885f-default-rtdb.firebaseio.com/orders.json', {
+            method: 'POST',
+            body: JSON.stringify({
+                user: userData.name,
+                address: userData.street,
+                postcode: userData.postcode,
+                city: userData.city, 
+                orderedItems: cartCtx.items,
+            }),
+        });
+    };
+
     const checkoutButtons = (
             <div className={classes.actions}>
                 <button className={classes['button--alt']} onClick={props.onCloseCart}>Close</button>
@@ -52,7 +65,7 @@ const Cart = props => {
                 <div className={classes.total}><span>Total Amount</span></div>
                 <div><span>{totalAmount}</span></div>
             </div>
-            {isCheckout && <Checkout onCloseCart={props.onCloseCart}/>} 
+            {isCheckout && <Checkout onSubmitData={onSubmitData} onCloseCart={props.onCloseCart}/>} 
             {!isCheckout && checkoutButtons}
         </Modal>
     );
